@@ -1,6 +1,12 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+
+import { useEffect, useState } from "react";
+
 import { ShoppingCartIcon } from "lucide-react";
+
 import {
   Sheet,
   SheetContent,
@@ -11,12 +17,25 @@ import {
 } from "./ui/sheet";
 import { Separator } from "./ui/separator";
 import { formatPrice } from "@/lib/utils";
-import Link from "next/link";
 import { buttonVariants } from "./ui/button";
-import Image from "next/image";
+import { useCart } from "@/hooks/use-cart";
+import { ScrollArea } from "./ui/scroll-area";
+import CartItem from "./CartItem";
 
 const Cart = () => {
-  const itemCount = 0;
+  const { items } = useCart();
+  const itemCount = items.length;
+
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const cartTotal = items.reduce(
+    (total, { product }) => total + product.price,
+    0
+  );
 
   const fee = 1;
 
@@ -29,20 +48,27 @@ const Cart = () => {
         />
 
         <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-          0
+          {isMounted ? (
+            itemCount
+          ) : (
+            <span className="sr-only">Items in cart</span>
+          )}
         </span>
       </SheetTrigger>
 
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="space-y-2.5 pr-6">
-          <SheetTitle>Cart (0)</SheetTitle>
+          <SheetTitle>Cart ({itemCount})</SheetTitle>
         </SheetHeader>
 
         {itemCount > 0 ? (
           <>
             <div className="flex w-full flex-col pr-6">
-              {/* TODO: cart logic */}
-              cart items
+              <ScrollArea>
+                {items.map(({ product }) => (
+                  <CartItem key={product.id} product={product} />
+                ))}
+              </ScrollArea>
             </div>
 
             <div className="space-y-4 pr-6">
@@ -60,7 +86,7 @@ const Cart = () => {
 
                 <div className="flex">
                   <span className="flex-1">Total</span>
-                  <span className="">{formatPrice(fee)}</span>
+                  <span className="">{formatPrice(cartTotal + fee)}</span>
                 </div>
               </div>
 

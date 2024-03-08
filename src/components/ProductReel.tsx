@@ -1,8 +1,9 @@
-import Link from "next/link";
+"use client";
 
 import { TQueryValidator } from "@/lib/validators/query-validator";
-import { trpc } from "@/trpc/client";
 import { Product } from "@/payload-types";
+import { trpc } from "@/trpc/client";
+import Link from "next/link";
 import ProductListing from "./ProductListing";
 
 interface ProductReelProps {
@@ -28,10 +29,9 @@ const ProductReel = (props: ProductReelProps) => {
       }
     );
 
-  const products = queryResults?.pages.flatMap((page) => page.items) ?? [];
+  const products = queryResults?.pages.flatMap((page) => page.items);
 
   let map: (Product | null)[] = [];
-
   if (products && products.length) {
     map = products;
   } else if (isLoading) {
@@ -47,7 +47,6 @@ const ProductReel = (props: ProductReelProps) => {
               {title}
             </h1>
           ) : null}
-
           {subtitle ? (
             <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
           ) : null}
@@ -67,7 +66,11 @@ const ProductReel = (props: ProductReelProps) => {
         <div className="mt-6 flex items-center w-full">
           <div className="w-full grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-10 lg:gap-x-8">
             {map.map((product, i) => (
-              <ProductListing product={product} index={i} key={i} />
+              <ProductListing
+                key={`product-${i}`}
+                product={product}
+                index={i}
+              />
             ))}
           </div>
         </div>
