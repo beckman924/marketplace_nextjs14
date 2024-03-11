@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import {
   Body,
   Button,
@@ -11,6 +13,7 @@ import {
   Text,
   render,
 } from "@react-email/components";
+
 
 interface EmailTemplateProps {
   actionLabel: string;
