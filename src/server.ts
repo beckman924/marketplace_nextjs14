@@ -6,7 +6,7 @@ import { parse } from "url";
 import { IncomingMessage } from "http";
 import path from "path";
 import { PayloadRequest } from "payload/types";
-import cors from "cors";
+// import cors from "cors";
 
 import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
@@ -18,13 +18,13 @@ import { stripeWebhookHandler } from "./webhooks";
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-app.use(
-  cors({
-    origin: process.env.NEXT_PUBLIC_SERVER_URL,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.NEXT_PUBLIC_SERVER_URL,
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     credentials: true,
+//   })
+// );
 
 const createContext = ({
   req,
