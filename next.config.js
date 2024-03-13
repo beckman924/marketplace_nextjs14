@@ -10,7 +10,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "digitalhippo-production.up.railway.app",
+        hostname: "beckmandev-marketplace.vercel.app",
       },
     ],
   },

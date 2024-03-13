@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -22,4 +24,47 @@ export function formatPrice(
     style: "currency",
     maximumFractionDigits: 2,
   }).format(numericPrice);
+}
+
+export function constructMetadata({
+  title = "BeckmanDev Marketplace - the marketplace for digital assets",
+  description = "BeckmanDev Marketplace is an open-source marketplace for high-quality digital goods.",
+  image = "/thumbnail.png",
+  icons = "/favicon.ico",
+  noIndex = false,
+}: {
+  title?: string;
+  description?: string;
+  image?: string;
+  icons?: string;
+  noIndex?: boolean;
+} = {}): Metadata {
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      creator: "@BraCarabajal",
+    },
+    icons,
+    metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
+    ...(noIndex && {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }),
+  };
 }
