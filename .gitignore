@@ -37,3 +37,4 @@ next-env.d.ts
 .env
 /src/media
 /dist
+/src/product_files

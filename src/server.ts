@@ -1,20 +1,30 @@
-import express from "express";
-import * as trpcExpress from "@trpc/server/adapters/express";
-import { inferAsyncReturnType } from "@trpc/server";
-import bodyParser from "body-parser";
-import { IncomingMessage } from "http";
 import nextBuild from "next/dist/build";
+
+import express from "express";
+import bodyParser from "body-parser";
+import { parse } from "url";
+import { IncomingMessage } from "http";
 import path from "path";
 import { PayloadRequest } from "payload/types";
-import { parse } from "url";
+import cors from "cors";
 
 import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
+import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./trpc";
+import { inferAsyncReturnType } from "@trpc/server";
 import { stripeWebhookHandler } from "./webhooks";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+
+app.use(
+  cors({
+    origin: process.env.NEXT_PUBLIC_SERVER_URL,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 
 const createContext = ({
   req,
@@ -43,10 +53,23 @@ const start = async () => {
     initOptions: {
       express: app,
       onInit: async (cms) => {
-        cms.logger.info(`Admin URL ${cms.getAdminURL()}`);
+        cms.logger.info(`Admin URL: ${cms.getAdminURL()}`);
       },
     },
   });
+
+  if (process.env.NEXT_BUILD) {
+    app.listen(PORT, async () => {
+      payload.logger.info("Next.js is building for production");
+
+      // @ts-expect-error
+      await nextBuild(path.join(__dirname, "../"));
+
+      process.exit();
+    });
+
+    return;
+  }
 
   const cartRouter = express.Router();
 
@@ -58,25 +81,12 @@ const start = async () => {
     if (!request.user) return res.redirect("/sign-in?origin=cart");
 
     const parsedUrl = parse(req.url, true);
+    const { query } = parsedUrl;
 
-    return nextApp.render(req, res, "/cart", parsedUrl.query);
+    return nextApp.render(req, res, "/cart", query);
   });
 
   app.use("/cart", cartRouter);
-
-  if (process.env.NEXT_BUILD) {
-    app.listen(PORT, async () => {
-      payload.logger.info(`Next.js is building for production`);
-
-      // @ts-expect-error
-      await nextBuild(path.join(__dirname, "../"));
-
-      process.exit();
-    });
-
-    return;
-  }
-
   app.use(
     "/api/trpc",
     trpcExpress.createExpressMiddleware({
