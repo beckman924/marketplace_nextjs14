@@ -2,6 +2,8 @@
 
 Built with the Next.js 14 App Router, tRPC, TypeScript, Payload & Tailwind
 
+![Project Image](https://github.com/beckman924/marketplace_nextjs14/blob/master/public/Screenshot.webp)
+
 ## Features
 
 - 🛠️ Complete marketplace built from scratch in Next.js 14
@@ -16,6 +18,12 @@ Built with the Next.js 14 App Router, tRPC, TypeScript, Payload & Tailwind
 - ✅ Admins can verify products to ensure high quality
 - ⌨️ 100% written in TypeScript
 - 🎁 ...much more
+
+## Images
+
+![Screenshot-2](https://github.com/beckman924/marketplace_nextjs14/blob/master/public/Screenshot-2.webp)
+![Screenshot-3](https://github.com/beckman924/marketplace_nextjs14/blob/master/public/Screenshot-3.webp)
+![Screenshot-4](https://github.com/beckman924/marketplace_nextjs14/blob/master/public/Screenshot-4.webp)
 
 ## Getting started
 
